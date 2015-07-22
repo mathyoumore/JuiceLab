@@ -25,10 +25,14 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>x_vel = 10;
-y_vel = 10;
-
-
+            <string>global.x_vel = 3;
+global.y_vel = 0;
+global.ball_x = 0;
+global.ball_y = 0;
+wall_width = sprite_get_width(spr_Wall);
+wall_height = sprite_get_height(spr_Wall);
+collision_trigger_y = false;
+collision_trigger_x = false;
 </string>
           </argument>
         </arguments>
@@ -51,31 +55,19 @@ y_vel = 10;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Collisions
-
-i = 0;
-//Player
-if (position_meeting(x,y+1+sprite_height/2,p_Player)) {
-    y_vel *= -1;
+            <string>///Displace
+if (collision_trigger_y) {
+global.y_vel *= -1; 
+collision_trigger_y = false;
 }
-
-//Bricks
-if (position_meeting(x,y+1+sprite_height/2,obj_Brick) || position_meeting(x,y-1-sprite_height/2,obj_Brick)) {
-    y_vel *= -1;
+if (collision_trigger_x) {
+global.x_vel *= -1; 
+collision_trigger_x = false;
 }
-
-if (position_meeting(x+1+sprite_height/2,y,obj_Brick) || position_meeting(x-1-sprite_height/2,y,obj_Brick)) {
-    x_vel *= -1;
-}
-
-//Walls
-if (position_meeting(x,y+1+sprite_height/2,obj_Wall) || position_meeting(x,y-1-sprite_height/2,obj_Wall)) {
-    y_vel *= -1;
-}
-
-if (position_meeting(x+1+sprite_height/2,y,obj_Wall) || position_meeting(x-1-sprite_height/2,y,obj_Wall)) {
-    x_vel *= -1;
-}
+x += global.x_vel;
+y += global.y_vel;
+global.ball_x = x;
+global.ball_y = y;
 
 </string>
           </argument>
@@ -97,11 +89,81 @@ if (position_meeting(x+1+sprite_height/2,y,obj_Wall) || position_meeting(x-1-spr
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Displace
-x += x_vel;
-y += y_vel;
+            <string>///Collisions
+
+i = 0;
+
+cx = global.x_vel;
+cy = global.y_vel;
+while (cx &gt; 0 &amp;&amp; cy &gt; 0) {
+    //Player
+    if (place_meeting(x,y+cy+sprite_height/2,p_Player)) {
+        collision_trigger_y = true;
+        y = y + cy + (sprite_height/2) - 1;
+    }
+    
+    //Bricks
+    if (place_meeting(x,y+cy+sprite_height/2,obj_Brick) || place_meeting(x,y+cy-sprite_height/2,obj_Brick)) {
+        collision_trigger_y = true;
+    }
+    
+    else if (place_meeting(x+cx+sprite_height/2,y,obj_Brick) || place_meeting(x+cx-sprite_height/2,y,obj_Brick)) {
+        collision_trigger_x = true;
+    }
+    
+    //Walls
+    if (place_meeting(x,y+cy+sprite_height/2,obj_Wall) || place_meeting(x,y+cy-sprite_height/2,obj_Wall)) {
+        collision_trigger_y = true;
+        instance_create(x,0,obj_debug);
+    }
+    
+    else if (place_meeting(x+cx+sprite_width/2,y,obj_Wall) || place_meeting(x+cx-sprite_width/2,y,obj_Wall)) {
+        collision_trigger_x = true;
+        instance_create(0,y,obj_debug);
+    }
+    cx--;
+    cy--;
+}
 
 </string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="8" enumb="73">
+      <action>
+        <libid>1</libid>
+        <id>511</id>
+        <kind>0</kind>
+        <userelative>-1</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>1</exetype>
+        <functionname>action_draw_rectangle</functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>0</kind>
+            <string>x</string>
+          </argument>
+          <argument>
+            <kind>0</kind>
+            <string>y</string>
+          </argument>
+          <argument>
+            <kind>0</kind>
+            <string>x+global.x_vel+(sprite_width/2)</string>
+          </argument>
+          <argument>
+            <kind>0</kind>
+            <string>y+global.y_vel+sprite_height/2</string>
+          </argument>
+          <argument>
+            <kind>4</kind>
+            <string>1</string>
           </argument>
         </arguments>
       </action>

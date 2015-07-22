@@ -10,6 +10,7 @@
     <sprite>sprites\spr_brick</sprite>
     <sprite>sprites\spr_ball</sprite>
     <sprite>sprites\spr_Wall</sprite>
+    <sprite>sprites\spr_bug</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -21,6 +22,8 @@
     <object>objects\obj_Brick</object>
     <object>objects\obj_Ball</object>
     <object>objects\obj_Wall</object>
+    <object>objects\obj_Controller_Wall</object>
+    <object>objects\obj_debug</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\rm_main</room>
